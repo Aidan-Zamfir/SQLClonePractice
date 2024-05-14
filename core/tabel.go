@@ -32,6 +32,13 @@ func (t *Table) ExecuteInsert(q query.Query) TableResult {
 
 	pageNum := t.numRow / PageSize
 	if len(t.pages) <= pageNum {
-		
+		t.pages = append(t.pages, Page{})
 	}
+	page := &t.pages[pageNum]
+	if page.PageSize() < PageSize {
+		page.AddRow(row)
+		t.numRow += 1
+		return ExecuteSuccess
+	}
+	return ExecuteFailed
 }
